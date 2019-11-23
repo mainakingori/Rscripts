@@ -1,0 +1,85 @@
+---
+title: "Soil survey"
+author: "Data scientist George Maina"
+date: "December 22, 2018"
+output: html_document
+---
+
+```{r}
+Soil_data <- read.csv("E:/Rscripts/Soil survey.csv")
+Soil_data<-dcast(melt(Soil_data, id.vars = "Field"), variable ~ Field)
+```
+```{r}
+Soil1 <- Soil.survey %>%
+  select(`Sodium me%`, `Potassium me%`, `Manganese me%`, `* Total Nitrogen %`, `Exch. Acidity me%`) %>%
+  gather(`Sodium me%`, `Potassium me%`, `Manganese me%`, `* Total Nitrogen %`,
+         `Exch. Acidity me%`, key = "Nutrients", value = "Quantity") %>%
+  group_by(Nutrients) 
+
+table1 <- Soil1 %>%
+  summarize_each(funs(mean(.,na.rm = TRUE), median(.,na.rm = TRUE), sd(.,na.rm = TRUE), max(.,na.rm = TRUE), min(.,na.rm = TRUE)), Quantity)
+
+table1 %>%
+  kable("html",
+        caption = "Descriptive statistics for sodium, potassium, Manganese, Acidity and Nitrogen") %>%
+  kable_styling(bootstrap_options = "striped")
+```
+
+```{r}
+#Boxplots for sodium, potassium, Manganese, and Nitrogen
+ggplot(Soil1, aes(x= Nutrients, y= Quantity, fill = Nutrients)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 30, vjust=0.5))
+```
+
+```{r}
+Soil2 <- Soil_data %>%
+  select(`* Soil pH`, `* Total Org. Carbon %`, `Calcium me%`, `Copper ppm`, `Magnesium me%`) %>%
+  gather(`* Soil pH`, `* Total Org. Carbon %`, `Calcium me%`, `Copper ppm`, `Magnesium me%`, key = "Nutrients", value = "Quantity") %>%
+  group_by(Nutrients)
+```
+
+```{r}
+#Descriptive statistics for Ph , Carbon, Calcium, Copper and Magnesium
+table2 <- Soil2 %>%
+  summarize_each(funs(mean(.,na.rm = TRUE), median(.,na.rm = TRUE), sd(.,na.rm = TRUE), max(.,na.rm = TRUE), min(.,na.rm = TRUE)), Quantity)
+
+table2 %>%
+  kable("html",
+        caption = "Descriptive statistics for Ph, Carbon, Calcium, Copper and Magnesium") %>%
+  kable_styling(bootstrap_options = "striped")
+```
+
+```{r}
+#Boxplot for Ph, Carbon, Calcium, Copper and Magnesium
+ggplot(Soil2, aes(x= Nutrients, y= Quantity, fill = Nutrients)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 30, vjust=0.5))
+```
+
+```{r}
+Soil3 <- Soil_data %>%
+  select(`Iron ppm`, `Phosphorus (Mehlich) ppm`, `Zinc ppm`) %>%
+  gather(`Iron ppm`, `Phosphorus (Mehlich) ppm`, `Zinc ppm`, key = "Nutrients", value = "Quantity" ) %>% 
+  group_by(Nutrients)
+
+```
+
+```{r}
+#Descriptive statistics for Iron, Phosphorous and Zink
+table3 <- Soil3 %>%
+  summarize_each(funs(mean(.,na.rm = TRUE), median(.,na.rm = TRUE), sd(.,na.rm = TRUE), max(.,na.rm = TRUE), min(.,na.rm = TRUE)), Quantity)
+
+table3 %>%
+  kable("html",
+        caption = "Descriptive statistics for Iron, Phosphorous and Zink") %>%
+  kable_styling(bootstrap_options = "striped")
+```
+
+
+```{r}
+#Boxplot for for Iron, Phosphorous and Zink
+ggplot(Soil3, aes(x= Nutrients, y= Quantity, fill = Nutrients)) +
+  geom_boxplot()
+
+```

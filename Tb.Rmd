@@ -1,0 +1,35 @@
+---
+title: "Tb Survival analysis"
+author: "Data scientist George Maina"
+date: "June 26, 2019"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r}
+library(survival)
+survobj=with(Cleaned.data, Surv(Age1,HIV.Status))
+survobj
+fit0 <- survfit(survobj~1, data=Cleaned.data)
+summary(fit0)
+plot(fit0, xlab="Survival Time in Days",
+     ylab="% Surviving", yscale=100,
+     main="Survival Distribution (Overall)") 
+# Compare the survival distributions of men and women
+fit1 <- survfit(survobj~Age1,data=Cleaned.data)
+
+# plot the survival distributions by sex
+plot(fit1, xlab="Survival Time in Days",
+     ylab="% Surviving", yscale=100, col=c("red","blue"),
+     main="Survival Distributions by Gender")
+legend("topright", title="Gender", c("Male", "Female"),
+       fill=c("red", "blue"))
+
+# test for difference between male and female
+# survival curves (logrank test)
+survdiff(survobj~gender, data=Cleaned.data)
+
+
+```
+

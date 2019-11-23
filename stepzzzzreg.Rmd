@@ -1,0 +1,59 @@
+---
+title: "stepwise reg"
+author: "Data scientist George Maina"
+date: "July 4, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+data("mtcars")
+mtcars
+View(mtcars)
+attach(mtcars)
+v=dist(mpg)
+v
+a=hclust(v)
+a
+cutree(a,k=3)
+k=lm(mpg~drat+cyl+factor(vs)+wt+hp+disp+factor(am)+gear+carb)
+k
+boxcox(k)
+plot(k,which = 1)#plot fitted vs residuals
+library(car)
+library(hclust)
+outlierTest(k)
+predict(k,interval = "prediction")
+influence.measures(k)
+h=dist(k)
+summary(k)
+confint(k)
+anova(k)
+qqline(resid(k))
+library(MASS)
+qqline()
+reduced.model <- step(k, direction="backward")
+reduced.model
+w=lm(mpg~wt+hp+cyl)
+w
+boxcox(w)
+summary(w)
+min.model=lm(mpg~1)
+min.model
+fwd.model <- step(min.model,
+                  direction="forward",
+                   scope=( ~ drat+cyl+factor(vs)+wt+hp+disp+factor(am)+gear+carb),
+                  trace=0 )
+fwd.model
+u=summary(fwd.model)
+u
+z=resid(u)
+z
+qqline(z)
+qqnorm(z)
+qqline(z)
+mm=lm(mpg~cyl,subset = floor(length(cyl)/2))
+mm
+summary(mm)
+
+```
+

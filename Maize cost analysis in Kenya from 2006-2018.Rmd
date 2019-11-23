@@ -1,0 +1,98 @@
+---
+title: "Maize cost analysis"
+author: "Data scientist George Maina"
+date: "March 2, 2019"
+output: html_document
+---
+
+```{r}
+library(aTSA)
+library(fGarch)
+library(tidyverse)
+library(dygraphs)
+
+# Monthly maize price per tonne for Kenya from Jan 2006 -  Dec 2018 in USD
+  kenya <- read.csv(file.choose(), header = TRUE)     # read data from the computer
+  mykenya <- kenya; mykenya[, 2] <- 1:156 ;colnames(mykenya) <- c("kenya", "time_index");mykenya <- as.tibble(mykenya)
+  
+  # creating a time series object
+  kenya_ts <- ts(kenya, frequency = 12, start = c(2006, 1))
+  
+  # Obtaining the simple gross returns
+  
+  lag(as.vector(kenya_ts), 1)
+  logreturns <- log(as.vector(kenya_ts)/lag(as.vector(kenya_ts), 1))
+  logreturns <- logreturns[-1]
+  # logreturns[1] <- 0
+  logreturns1 <- ts(logreturns, frequency = 12, start = c(2006, 1))
+  ts.plot(logreturns1)
+  
+  
+  # BOX JENKINS PROCEDURE
+  
+  # 1. STEP ONE:IDENTIFICATION
+  
+  adf.test(logreturns1)   # data is stationary
+  acf(logreturns1)
+  pacf(logreturns1)
+  
+  
+  
+  # The ARMA model has order ARMA(19, 1, 1)
+  # ARMA(20, 0, 0)
+  # ARMA(18, 0, 1)
+  # ARMA(17, 0, 1)
+  # ARMA(17, 0, 0)
+  # ARMA(16, 0, 1)
+  # ARMA(16, 0, 0)
+  # ARMA(15, 0, 1)
+  
+  
+  # 1. STEP TWO: ESTIMATION
+  m1 <- arima(logreturns1, order = c(20, 0, 0))
+  m2 <- arima(logreturns1, order = c(18, 0, 1))
+  m3 <- arima(logreturns1, order = c(17, 0, 1))
+  m4 <- arima(logreturns1, order = c(17, 0, 0))
+  m5 <- arima(logreturns1, order = c(16, 0, 1))
+  m6 <- arima(logreturns1, order = c(16, 0, 0))
+  m7 <- arima(logreturns1, order = c(15, 0, 1))
+  m8 <- arima(logreturns1, order = c(19, 0, 1))
+  m9 <- arima(logreturns1, order = c(2, 0, 2))
+  
+  m1$aic;m2$aic;m3$aic;m4$aic;m5$aic;m6$aic;m7$aic;m8$aic;m9$aic
+  
+  # the best model is m2 
+  arch.test(m2, output = TRUE)
+  
+  
+  # portmanteau test RESEARCH
+  
+  
+  
+  # TO OBTAIN THE ORDER OF THE ARCH EFFECTS
+  at <- m2$residuals
+  at2 <- at^2
+  pacf(at2)
+  
+  # the simplest order is ARCH(1)
+  # But in this case thwe pacf cuts off at lag 13. Therefore, ARCH(1)
+  
+  #  FITTING THE ARCH MODEL TOGETHER WITH THE MEAN SERIES
+  library(fGarch)
+  mymodel <- garchFit(~arma(18, 1) + garch(1,0), logreturns1)
+  myvar <- volatility(mymodel)
+  ts.plot(myvar)
+  
+  
+  
+  
+  ggplot(mykenya) +
+    geom_line(aes(x = time_index, y = kenya))
+  
+  
+  
+  
+  
+
+```
+

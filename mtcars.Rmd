@@ -1,0 +1,19 @@
+---
+title: "Mtcars"
+author: "Data scientist George Maina"
+date: "December 26, 2018"
+output: html_document
+---
+
+```{r}
+attach(mtcars)
+plot(wt, mpg,
+main="Mileage vs. Car Weight",
+xlab="Weight", ylab="Mileage",
+pch=18, col="blue")
+text(wt, mpg,
+row.names(mtcars),
+cex=0.6, pos=4,font = 2,col="green")
+detach(mtcars)
+```
+

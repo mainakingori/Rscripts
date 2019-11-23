@@ -1,0 +1,25 @@
+---
+title: "Survial analysis"
+author: "Data scientist George Maina"
+date: "May 21, 2019"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r}
+library(survival)
+library(KMsurv)
+mydata=read.csv(file.choose(),header = TRUE)
+mydata
+attach(mydata)
+mini=mydata[-6]
+attach(mini)
+mini
+as.data.frame(mini)
+ts.plot(Time)
+hist(Time, main="Survival Analysis", col="green")
+plot(sent.date~end.date, main="Scatterplots", col="blue")
+detach(mini)
+```
+

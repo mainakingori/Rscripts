@@ -1,0 +1,12 @@
+attach(mtcars)
+layout(matrix(c(1, 1, 2, 3), 2, 2, byrow = TRUE),
+       widths=c(2, 1), heights=c(1, 1))
+hist(wt)
+hist(mpg)
+hist(disp)
+d <- density(mtcars$mpg)
+plot(d)
+d <- density(mtcars$mpg)
+plot(d, main="Kernel Density of Miles Per Gallon")
+polygon(d, col="red", border="blue")
+rug(mtcars$mpg, col="brown")

@@ -1,0 +1,37 @@
+---
+title: "TB Analysis 2014-2019"
+author: "Data scientist George Maina"
+date: "May 28, 2019"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r}
+Cleaned.data
+str(Cleaned.data)
+head(Cleaned.data)
+AA=Cleaned.data$Type.of.patie0t
+AA
+BB=Cleaned.data$Age1
+BB
+CC=Cleaned.data$HIV.Status
+CC
+DD=Cleaned.data$BMI
+DD
+EE=Cleaned.data$Sex.M.0
+EE
+FF=as.data.frame(AA,BB,CC,DD,EE)
+FF
+HH=glm(AA~BB+CC+DD+EE,family = "binomial")
+summary(HH)
+PP=hist(EE,maina="sex distribution",col="green")
+PP
+KK=hist(CC,main="HIV status",col = "purple")
+KK
+GG=matplot(FF,col="blue")
+GG
+
+
+```
+
